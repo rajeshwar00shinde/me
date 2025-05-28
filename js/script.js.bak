@@ -1,0 +1,118 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize WOW.js for scroll animations
+    // Make sure wow.min.js is correctly linked in your HTML
+    new WOW().init();
+
+    // Preloader
+    const preloader = document.querySelector('.preloader');
+    if (preloader) {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 700); // Matches opacity transition duration
+            }, 500); // Minimum display time for preloader
+        });
+    }
+
+    // Navbar Shrink on Scroll & Active Link Highlighting
+    const navbar = document.querySelector('.navbar');
+    const navLinks = document.querySelectorAll('.nav-links a.smoothScroll');
+    const sections = document.querySelectorAll('section[id]'); // Select all sections with an ID
+
+    function updateNavbarAndLinks() {
+        // Navbar shrink effect
+        if (window.scrollY > 80) { // Adjust threshold for when navbar shrinks
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+
+        // Active link highlighting based on scroll position
+        let currentActiveSectionId = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - navbar.offsetHeight - 60; // Offset for navbar and padding
+            const sectionHeight = section.clientHeight;
+
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                currentActiveSectionId = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            // Check if the link's href matches the current active section ID
+            if (link.getAttribute('href') === `#${currentActiveSectionId}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Attach scroll listener
+    window.addEventListener('scroll', updateNavbarAndLinks);
+    // Call on load to set initial state
+    updateNavbarAndLinks();
+
+    // Smooth Scrolling for internal links
+    document.querySelectorAll('a.smoothScroll').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            const navbarHeight = navbar.offsetHeight; // Get current navbar height dynamically
+
+            if (targetElement) {
+                const offsetPosition = targetElement.offsetTop - navbarHeight - 20; // Adjust for padding below navbar
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Close mobile menu after clicking a link
+                const menuToggle = document.querySelector('.menu-toggle');
+                const mainNavLinks = document.getElementById('main-nav-links');
+                if (mainNavLinks.classList.contains('active')) {
+                    mainNavLinks.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+    });
+
+    // Mobile Navigation Toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainNavLinks = document.getElementById('main-nav-links');
+
+    if (menuToggle && mainNavLinks) {
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            mainNavLinks.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
+    // Skill Bar Animation on Scroll
+    const skillBars = document.querySelectorAll('.skills-section .progress-bar');
+    const skillsSection = document.querySelector('.skills-section');
+
+    const skillObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                skillBars.forEach(bar => {
+                    const percentage = bar.getAttribute('data-progress');
+                    bar.style.width = percentage + '%'; // Trigger CSS transition
+                });
+                observer.unobserve(skillsSection); // Stop observing once animated
+            }
+        });
+    }, { threshold: 0.4 }); // Trigger when 40% of the section is visible
+
+    if (skillsSection) {
+        skillObserver.observe(skillsSection);
+    }
+});
