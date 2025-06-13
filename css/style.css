@@ -58,6 +58,9 @@ body {
 
 /* Navbar styling to fix it at the top */
 .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -252,6 +255,14 @@ body {
     position: relative;
     overflow: hidden;
     background: linear-gradient(135deg, var(--light-bg), var(--border-color));
+}
+
+.hero-container {
+    display: flex; /* Makes the container's children flex items */
+    flex-direction: row; /* Arranges children (hero-content, hero-image) horizontally */
+    align-items: center; /* Vertically centers hero-content and hero-image relative to each other */
+    justify-content: space-between; /* Pushes hero-content to the left and hero-image to the right */
+    width: 100%; /* Ensure it takes available width */
 }
 
 .hero-content {
