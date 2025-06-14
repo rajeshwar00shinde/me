@@ -352,6 +352,26 @@ body {
     box-shadow: var(--shadow-medium);
 }
 
+@media screen and (max-width: 1200px) {
+            .hero-container {
+                flex-direction: column; /* Stack items vertically */
+                align-items: center; /* Center items horizontally */
+                width: 90%; /* Reduce width for tablets */
+                margin: 0 auto; /* Center the container */
+                padding: 15px;
+            }
+
+            .hero-content {
+                padding-right: 0; /* Remove right padding when stacked */
+                margin-bottom: 20px; /* Add space below content */
+                text-align: center; /* Center text */
+            }
+
+            .hero-image {
+                max-width: 80%; /* Make image wider on tablets */
+            }
+}
+
 @media (max-width: 992px) {
     .hero-section {
         flex-direction: column;
